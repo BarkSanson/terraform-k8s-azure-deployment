@@ -1,9 +1,3 @@
-/**
- * @author Martín Ignacio Rizzo
- * @author Pere Joan Vives Morey
- */
-
-
 const MAX_RESULTS = 500;
 const QUERY = 'all:deep+AND+all:learning';
 const AUTHOR_NUMBER_URL = `http://export.arxiv.org/api/query?search_query=${QUERY}&start=0&max_results=${MAX_RESULTS}`;
