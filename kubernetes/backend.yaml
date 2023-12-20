@@ -15,7 +15,6 @@ spec:
     targetPort: 3000
   selector:
     app: backend 
-
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -34,7 +33,7 @@ spec:
     spec:
       containers:
       - name: backend 
-        image: backend
+        image: barksanson/backend
         imagePullPolicy: IfNotPresent # Use local image
         ports:
         - containerPort: 3000
