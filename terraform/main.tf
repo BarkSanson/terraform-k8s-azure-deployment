@@ -55,7 +55,7 @@ resource "azurerm_mysql_flexible_server" "asi_data" {
     sku_name                = "B_Standard_B1s"
     administrator_login     = var.adminLogin
     administrator_password  = var.adminPassword
-    delegated_subnet_id     = azurerm_subnet.asi_subnet.id
+    delegated_subnet_id     = azurerm_subnet.db_subnet.id
 }
 
 resource "azurerm_mysql_flexible_database"  "asi_db" {
