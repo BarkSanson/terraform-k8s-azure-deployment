@@ -44,6 +44,6 @@ resource "azurerm_kubernetes_cluster" "asi" {
     }
 
     key_management_service {
-        key_vault_id = azurerm_key_vault.asi.id
+        key_vault_key_id = azurerm_key_vault.asi.id
     }
 }
