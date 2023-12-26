@@ -7,6 +7,60 @@ resource "azurerm_resource_group" "asi" {
     location = "eastus"
 }
 
+resource "azurerm_key_vault" "asi" {
+    name                        = "asi"
+    location                    = azurerm_resource_group.asi.location
+    resource_group_name         = azurerm_resource_group.asi.name
+    enabled_for_disk_encryption = true
+    tenant_id                   = data.azurerm_client_config.current.tenant_id
+
+    sku_name = "standard"
+
+    public_network_access_enabled = false
+
+    access_policy {
+        tenant_id = data.azurerm_client_config.current.tenant_id
+        object_id = data.azurerm_client_config.current.object_id
+
+        key_permissions = [
+            "get",
+            "list",
+            "create",
+            "delete",
+            "recover",
+            "backup",
+            "restore",
+            "encrypt",
+            "decrypt",
+            "unwrapKey",
+            "wrapKey"
+        ]
+
+        secret_permissions = [
+            "get",
+            "list",
+            "set",
+            "delete",
+            "recover",
+            "backup",
+            "restore"
+        ]
+
+        storage_permissions = [
+            "get",
+            "list",
+            "delete",
+            "set",
+            "update",
+            "regeneratekey",
+            "recover",
+            "backup",
+            "restore",
+            "purge"
+        ]
+    }
+}
+
 resource "azurerm_mysql_flexible_server" "asi_data" {
     name                    = "asi-data"
     resource_group_name     = azurerm_resource_group.asi.name
@@ -14,7 +68,7 @@ resource "azurerm_mysql_flexible_server" "asi_data" {
     sku_name                = "B_Standard_B1s"
     administrator_login     = var.adminLogin
     administrator_password  = var.adminPassword
-    delegated_subnet_id     = azurerm_subnet.asi_subnet.id
+    delegated_subnet_id     = azurerm_subnet.db_subnet.id
 }
 
 resource "azurerm_mysql_flexible_database"  "asi_db" {
