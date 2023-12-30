@@ -3,7 +3,7 @@ data "http" "ip" {
 }
 
 resource "azurerm_key_vault" "asi" {
-    name                        = "asi"
+    name                        = "asi-kv2"
     location                    = azurerm_resource_group.asi.location
     resource_group_name         = azurerm_resource_group.asi.name
     enabled_for_disk_encryption = true
@@ -14,24 +14,24 @@ resource "azurerm_key_vault" "asi" {
     public_network_access_enabled = true
 
     access_policy {
-        tenant_id = data.azurerm_client_config.current.tenant_id
-        object_id = data.azurerm_client_config.current.object_id
+      tenant_id = data.azurerm_client_config.current.tenant_id
+      object_id = data.azurerm_client_config.current.object_id
 
-        key_permissions = []
+      key_permissions = []
 
-        secret_permissions = [
-            "Get",
-            "List",
-            "Set",
-            "Delete",
-            "Recover",
-            "Backup",
-            "Restore",
-            "Purge"
-        ]
+      secret_permissions = [
+          "Get",
+          "List",
+          "Set",
+          "Delete",
+          "Recover",
+          "Backup",
+          "Restore",
+          "Purge"
+      ]
 
-        storage_permissions = []
-    }
+      storage_permissions = []
+    } 
 
     network_acls {
         default_action = "Deny"

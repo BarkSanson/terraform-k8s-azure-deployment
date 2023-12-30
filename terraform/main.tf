@@ -34,6 +34,8 @@ resource "azurerm_kubernetes_cluster" "asi" {
     resource_group_name = azurerm_resource_group.asi.name
     dns_prefix          = "asi"
 
+    oidc_issuer_enabled = true
+
     default_node_pool {
         name            = "default"
         node_count      = 1
@@ -56,4 +58,5 @@ resource "azurerm_kubernetes_cluster" "asi" {
         service_cidr = "172.16.0.0/16"
         dns_service_ip = "172.16.0.10"
     }
+
 }
