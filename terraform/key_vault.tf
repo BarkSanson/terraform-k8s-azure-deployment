@@ -1,3 +1,6 @@
+data "http" "ip" {
+  url = "https://ipv4.icanhazip.com"
+}
 
 resource "azurerm_key_vault" "asi" {
     name                        = "asi"
@@ -8,24 +11,13 @@ resource "azurerm_key_vault" "asi" {
 
     sku_name = "standard"
 
-    public_network_access_enabled = false
+    public_network_access_enabled = true
 
     access_policy {
         tenant_id = data.azurerm_client_config.current.tenant_id
         object_id = data.azurerm_client_config.current.object_id
-        application_id = var.clientId
 
-        key_permissions = [
-            "Get",
-            "List",
-            "Update",
-            "Create",
-            "Import",
-            "Delete",
-            "Recover",
-            "Backup",
-            "Restore"
-        ]
+        key_permissions = []
 
         secret_permissions = [
             "Get",
@@ -34,20 +26,11 @@ resource "azurerm_key_vault" "asi" {
             "Delete",
             "Recover",
             "Backup",
-            "Restore"
+            "Restore",
+            "Purge"
         ]
 
-        storage_permissions = [
-            "Get",
-            "List",
-            "Delete",
-            "Set",
-            "Update",
-            "RegenerateKey",
-            "Recover",
-            "Backup",
-            "Restore",
-        ]
+        storage_permissions = []
     }
 
     network_acls {
@@ -59,5 +42,21 @@ resource "azurerm_key_vault" "asi" {
             azurerm_subnet.db_subnet.id,
             azurerm_subnet.aks_subnet.id
         ]
+
+        ip_rules = [ 
+            "${chomp(data.http.ip.response_body)}"
+         ]
     }
+}
+
+resource "azurerm_key_vault_secret" "db_user" {
+  name         = "ASI-DB-USER"
+  value        = var.adminLogin 
+  key_vault_id = azurerm_key_vault.asi.id
+}
+
+resource "azurerm_key_vault_secret" "db_pass" {
+  name         = "ASI-DB-PASS"
+  value        = var.adminPassword
+  key_vault_id = azurerm_key_vault.asi.id 
 }

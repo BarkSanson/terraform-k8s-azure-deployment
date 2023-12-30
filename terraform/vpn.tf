@@ -1,5 +1,5 @@
 resource "azurerm_virtual_network" "asi_vnet" {
-    name                = "asi-vnet"
+    name                = "asi-vnet2"
     resource_group_name = azurerm_resource_group.asi.name
     location            = azurerm_resource_group.asi.location
     address_space       = ["10.0.0.0/8"]
@@ -9,7 +9,8 @@ resource "azurerm_subnet" "db_subnet" {
     name                 = "db-subnet"
     resource_group_name  = azurerm_resource_group.asi.name
     virtual_network_name = azurerm_virtual_network.asi_vnet.name
-    address_prefixes     = ["10.0.0.0/24"]
+    address_prefixes     = ["10.0.1.0/24"]
+    service_endpoints = [ "Microsoft.KeyVault" ]
     delegation {
         name = "asi-delegation"
         service_delegation {
@@ -17,8 +18,6 @@ resource "azurerm_subnet" "db_subnet" {
             actions = ["Microsoft.Network/virtualNetworks/subnets/join/action"]
         }
     }
-
-    service_endpoints = [ "Microsoft.KeyVault"]
 }
 
 resource "azurerm_subnet" "aks_subnet" {

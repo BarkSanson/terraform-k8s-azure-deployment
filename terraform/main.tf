@@ -5,8 +5,8 @@ provider "azurerm" {
 data "azurerm_client_config" "current" {}
 
 resource "azurerm_resource_group" "asi" {
-    name     = "asi"
-    location = "eastus"
+    name     = "asi2"
+    location = "eastus2"
 }
 
 resource "azurerm_mysql_flexible_server" "asi_data" {
@@ -17,6 +17,7 @@ resource "azurerm_mysql_flexible_server" "asi_data" {
     administrator_login     = var.adminLogin
     administrator_password  = var.adminPassword
     delegated_subnet_id     = azurerm_subnet.db_subnet.id
+
 }
 
 resource "azurerm_mysql_flexible_database" "asi_db" {
@@ -24,7 +25,7 @@ resource "azurerm_mysql_flexible_database" "asi_db" {
     resource_group_name = azurerm_resource_group.asi.name
     server_name         = azurerm_mysql_flexible_server.asi_data.name
     charset             = "utf8"
-    collation           = "utf8_general_ci"
+    collation           = "utf8_unicode_ci"
 }
 
 resource "azurerm_kubernetes_cluster" "asi" {
