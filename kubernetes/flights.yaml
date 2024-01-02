@@ -1,39 +1,39 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: backend
+  name: flights
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: backend 
-  namespace: backend
+  name: flights
+  namespace: flights
 spec:
   type: ClusterIP
   ports:
   - port: 80
-    targetPort: 4000
+    targetPort: 3000
   selector:
-    app: backend 
+    app: flights 
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: backend 
-  namespace: backend
+  name: flights 
+  namespace: flights
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: backend 
+      app: flights 
   template:
     metadata:
       labels:
-        app: backend 
+        app: flights 
     spec:
       containers:
-      - name: backend 
-        image: asiregistry.azurecr.io/backend
+      - name: flights 
+        image: asiregistry.azurecr.io/flights
         ports:
         - containerPort: 3000
         env:

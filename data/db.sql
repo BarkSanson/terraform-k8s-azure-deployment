@@ -15,12 +15,12 @@ CREATE TABLE flight_logs (
     passenger_count INT NOT NULL
 );
 
-CREATE TABLE jugador ( 
+CREATE TABLE players( 
     id INT PRIMARY KEY,
-    nom VARCHAR(30) NOT NULL,
-    edad INT NOT NULL,
+    player_name VARCHAR(30) NOT NULL,
+    age INT NOT NULL,
     overall INT NOT NULL,
-    nacionalidad VARCHAR(30) NOT NULL
+    nationality VARCHAR(30) NOT NULL
 );
 
 INSERT INTO flight_logs (flight_number, departure_airport, arrival_airport, departure_date, arrival_date, departure_time, arrival_time, passenger_count) VALUES
@@ -2028,7 +2028,7 @@ INSERT INTO flight_logs (flight_number, departure_airport, arrival_airport, depa
 ('PJT-5740', 'TRF', 'PAL', '2020-07-18', '2021-05-06', '3:35', '9:06', 315);
 
 
-INSERT INTO jugador (id, nom, edad, overall, nacionalidad) VALUES
+INSERT INTO jugador (id, player_name, age, overall, nationality) VALUES
 (194765, ' A. Griezmann', 28, '89', 'France'),
 (212198, ' Bruno Fernandes', 24, '89', 'Portugal'),
 (192985, ' K. De Bruyne', 28, '91', 'Belgium'),

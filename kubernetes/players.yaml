@@ -1,39 +1,38 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: frontend
+  name: players
 ---
-# Create a load balancer so I can access it from localhost
 apiVersion: v1
 kind: Service
 metadata:
-  name: frontend
-  namespace: frontend
+  name: players
+  namespace: players
 spec:
   type: ClusterIP
   ports:
   - port: 80
-    targetPort: 3000
+    targetPort: 4000
   selector:
-    app: frontend
+    app: players
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: frontend
-  namespace: frontend
+  name: players
+  namespace: players
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: frontend
+      app: players
   template:
     metadata:
       labels:
-        app: frontend
+        app: players
     spec:
       containers:
-      - name: frontend
-        image: asiregistry.azurecr.io/frontend 
+      - name: players
+        image: asiregistry.azurecr.io/players
         ports:
-        - containerPort: 80
+        - containerPort: 4000

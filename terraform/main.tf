@@ -53,6 +53,13 @@ module "az_storage" {
     location    = azurerm_resource_group.asi.location
 }
 
+module "appgw" {
+    source      = "./modules/appgw"
+    rg_name     = azurerm_resource_group.asi.name
+    location    = azurerm_resource_group.asi.location
+    subnet_id   = module.vpn.appgw_subnet_id
+}
+
 resource "azurerm_kubernetes_cluster" "asi" {
     name                = "asi"
     location            = azurerm_resource_group.asi.location
@@ -82,7 +89,7 @@ resource "azurerm_kubernetes_cluster" "asi" {
     }
 
     ingress_application_gateway {
-        subnet_id = module.vpn.appgw_subnet_id
+        gateway_id = module.appgw.appgw_id
     }
 }
 
@@ -91,6 +98,7 @@ resource "azurerm_role_assignment" "aks-acr-connector" {
     scope                = module.acr.acr_id
     role_definition_name = "AcrPull"
 }
+
 
 //resource "azurerm_role_assignment" "aks-appgw-connector" {
 //    principal_id         = module.vpn.vnet_id
