@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 
-const BACKEND = `${process.env.BACKEND_HOST}:${process.env.BACKEND_PORT}`;
+const BACKEND = `${process.env.BACKEND_HOST}`;
 
 app.get('/jugadores', async (req, res) => {
     const response = await fetch(`${BACKEND}/jugadores`);

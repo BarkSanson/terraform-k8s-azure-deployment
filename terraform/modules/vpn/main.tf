@@ -29,3 +29,10 @@ resource "azurerm_subnet" "aks_subnet" {
 
     service_endpoints = [ "Microsoft.KeyVault"]
 }
+
+resource "azurerm_subnet" "appgw_subnet" {
+    name = "appgw-subnet"
+    resource_group_name = var.rg_name
+    virtual_network_name = azurerm_virtual_network.asi_vnet.name
+    address_prefixes = ["10.2.0.0/24"] 
+}

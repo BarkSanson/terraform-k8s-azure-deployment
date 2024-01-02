@@ -9,13 +9,12 @@ metadata:
   name: backend 
   namespace: backend
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   ports:
-  - port: 3000
-    targetPort: 3000
+  - port: 80
+    targetPort: 4000
   selector:
     app: backend 
-
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -37,3 +36,21 @@ spec:
         image: asiregistry.azurecr.io/backend
         ports:
         - containerPort: 3000
+        env:
+        - name: "DB_HOST"
+          value: "asi-db-server.mysql.database.azure.com"
+        - name: "DB_NAME"
+          value: "asi"
+        - name: "DB_PORT"
+          value: "3306"
+        volumeMounts:
+        - name: secrets-store01-inline
+          mountPath: "/mnt/secrets-store"
+          readOnly: true
+  volumes:
+    - name: secrets-store01-inline
+      csi:
+        driver: secrets-store.csi.k8s.io
+        readOnly: true
+        volumeAttributes:
+          secretProviderClass: "asi-kv2"

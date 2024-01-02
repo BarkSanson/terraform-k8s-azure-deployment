@@ -48,3 +48,25 @@ resource "azurerm_key_vault" "asi" {
          ]
     }
 }
+
+resource "azurerm_role_assignment" "asi_admin" {
+    scope                = azurerm_key_vault.asi.id
+    role_definition_name = "Key Vault Administrator"
+    principal_id         = var.object_id
+}
+
+resource "azurerm_key_vault_secret" "asi_db_user" {
+    name         = "ASI-DB-USER"
+    value        = var.admin_login
+    key_vault_id = azurerm_key_vault.asi.id
+
+    depends_on = [ azurerm_role_assignment.asi_admin ]
+}
+
+resource "azurerm_key_vault_secret" "asi_db_pass" {
+    name         = "ASI-DB-PASS"
+    value        = var.admin_password
+    key_vault_id = azurerm_key_vault.asi.id
+
+    depends_on = [ azurerm_role_assignment.asi_admin ]
+}

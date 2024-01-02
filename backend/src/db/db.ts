@@ -1,19 +1,9 @@
-const { KeyClient } = require("@azure/keyvault-keys");
-const { DefaultAzureCredential } = require("@azure/identity");
-
 import mysql2, { PoolOptions, Pool } from 'mysql2/promise';
 
 
 export async function get_db_pool(): Promise<Pool> {
-    const credential = new DefaultAzureCredential();    
-
-    const keyVaultName = process.env["KEY_VAULT_NAME"];
-    const KVUri = "https://" + keyVaultName + ".vault.azure.net";
-
-    const client = new KeyClient(KVUri, credential);
-
-    const user = await client.getKey("ASI-DB-USER");
-    const password = await client.getKey("ASI-DB-PASSWORD");
+    const user = process.env["ASI-DB-USER"];
+    const password = process.env["ASI-DB-PASSWORD"];
 
     const database = process.env["DB_NAME"];
     const host = process.env["DB_HOST"];

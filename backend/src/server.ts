@@ -7,7 +7,7 @@ export class Server {
     private controller: Controller;
     private port: number;
 
-    constructor(controller: Controller, port: number = 3000) {
+    constructor(controller: Controller, port: number = 4000) {
         this.app = express();
         this.controller = controller;
         this.port = port;

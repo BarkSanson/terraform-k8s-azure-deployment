@@ -21,3 +21,11 @@ variable "db_subnet_id" {
 variable "aks_subnet_id" {
     description = "The ID of the AKS subnet" 
 }
+
+variable "admin_login" {
+    description = "The administrator username of the MySQL server." 
+}
+
+variable "admin_password" {
+    description = "The administrator password of the MySQL server." 
+}

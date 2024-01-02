@@ -3,8 +3,8 @@ resource "azurerm_mysql_flexible_server" "asi_db_server" {
     resource_group_name     = var.rg_name 
     location                = var.location
     sku_name                = "B_Standard_B1ms"
-    administrator_login     = var.adminLogin
-    administrator_password  = var.adminPassword
+    administrator_login     = var.admin_login
+    administrator_password  = var.admin_password
     delegated_subnet_id     = var.db_subnet_id
 
 }

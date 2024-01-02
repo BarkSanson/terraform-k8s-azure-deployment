@@ -26,6 +26,9 @@ module "kv" {
 
     db_subnet_id    = module.vpn.db_subnet_id
     aks_subnet_id   = module.vpn.aks_subnet_id
+
+    admin_login     = var.admin_login
+    admin_password  = var.admin_password
 }
 
 module "acr" {
@@ -40,8 +43,14 @@ module "mysql" {
     location        = azurerm_resource_group.asi.location
     db_subnet_id    = module.vpn.db_subnet_id
 
-    adminLogin      = var.adminLogin
-    adminPassword   = var.adminPassword
+    admin_login     = var.admin_login
+    admin_password  = var.admin_password
+}
+
+module "az_storage" {
+    source      = "./modules/storage"
+    rg_name     = azurerm_resource_group.asi.name
+    location    = azurerm_resource_group.asi.location
 }
 
 resource "azurerm_kubernetes_cluster" "asi" {
@@ -71,11 +80,20 @@ resource "azurerm_kubernetes_cluster" "asi" {
         service_cidr = "172.16.0.0/16"
         dns_service_ip = "172.16.0.10"
     }
+
+    ingress_application_gateway {
+        subnet_id = module.vpn.appgw_subnet_id
+    }
 }
 
-resource "azurerm_role_assignment" "asi" {
+resource "azurerm_role_assignment" "aks-acr-connector" {
     principal_id         = azurerm_kubernetes_cluster.asi.kubelet_identity[0].object_id
     scope                = module.acr.acr_id
     role_definition_name = "AcrPull"
-    skip_service_principal_aad_check = true
 }
+
+//resource "azurerm_role_assignment" "aks-appgw-connector" {
+//    principal_id         = module.vpn.vnet_id
+//    scope                = azurerm_kubernetes_cluster.asi.ingress_application_gateway[0].subnet_id
+//    role_definition_name = "Contributor"
+//}

@@ -1,6 +1,6 @@
 const MAX_RESULTS = 500;
 const QUERY = 'all:deep+AND+all:learning';
-const AUTHOR_NUMBER_URL = `http://export.arxiv.org/api/query?search_query=${QUERY}&start=0&max_results=${MAX_RESULTS}`;
+const AUTHOR_NUMBER_URL = `https://export.arxiv.org/api/query?search_query=${QUERY}&start=0&max_results=${MAX_RESULTS}`;
 const PASSENGER_NUMBER_URL = 'http://localhost:3000/flights/count';
 const JUGADORES_URL = 'http://localhost:3000/jugadores';
 
