@@ -34,7 +34,6 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: barksanson/prueba-nginx
-        imagePullPolicy: IfNotPresent # Use local image
+        image: asiregistry.azurecr.io/frontend 
         ports:
         - containerPort: 80

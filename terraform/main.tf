@@ -4,28 +4,44 @@ provider "azurerm" {
 
 data "azurerm_client_config" "current" {}
 
+
 resource "azurerm_resource_group" "asi" {
     name     = "asi2"
     location = "eastus2"
 }
 
-resource "azurerm_mysql_flexible_server" "asi_data" {
-    name                    = "asi-data"
-    resource_group_name     = azurerm_resource_group.asi.name
-    location                = azurerm_resource_group.asi.location
-    sku_name                = "B_Standard_B1ms"
-    administrator_login     = var.adminLogin
-    administrator_password  = var.adminPassword
-    delegated_subnet_id     = azurerm_subnet.db_subnet.id
-
+module "vpn" {
+    source      = "./modules/vpn"
+    rg_name     = azurerm_resource_group.asi.name
+    location    = azurerm_resource_group.asi.location
 }
 
-resource "azurerm_mysql_flexible_database" "asi_db" {
-    name                = "asi-db"
-    resource_group_name = azurerm_resource_group.asi.name
-    server_name         = azurerm_mysql_flexible_server.asi_data.name
-    charset             = "utf8"
-    collation           = "utf8_unicode_ci"
+module "kv" {
+    source          = "./modules/key_vault"
+    rg_name         = azurerm_resource_group.asi.name
+    location        = azurerm_resource_group.asi.location
+
+    tenant_id       = data.azurerm_client_config.current.tenant_id
+    object_id       = data.azurerm_client_config.current.object_id
+
+    db_subnet_id    = module.vpn.db_subnet_id
+    aks_subnet_id   = module.vpn.aks_subnet_id
+}
+
+module "acr" {
+    source   = "./modules/acr"
+    rg_name  = azurerm_resource_group.asi.name
+    location = azurerm_resource_group.asi.location
+}
+
+module "mysql" {
+    source          = "./modules/mysql"
+    rg_name         = azurerm_resource_group.asi.name
+    location        = azurerm_resource_group.asi.location
+    db_subnet_id    = module.vpn.db_subnet_id
+
+    adminLogin      = var.adminLogin
+    adminPassword   = var.adminPassword
 }
 
 resource "azurerm_kubernetes_cluster" "asi" {
@@ -34,18 +50,15 @@ resource "azurerm_kubernetes_cluster" "asi" {
     resource_group_name = azurerm_resource_group.asi.name
     dns_prefix          = "asi"
 
-    oidc_issuer_enabled = true
-
     default_node_pool {
         name            = "default"
         node_count      = 1
         vm_size         = "Standard_B2s"
-        vnet_subnet_id  = azurerm_subnet.aks_subnet.id
+        vnet_subnet_id  = module.vpn.aks_subnet_id
     }
 
-    service_principal {
-        client_id     = var.clientId
-        client_secret = var.clientSecret
+    identity {
+        type = "SystemAssigned"
     }
 
     key_vault_secrets_provider {
@@ -58,5 +71,11 @@ resource "azurerm_kubernetes_cluster" "asi" {
         service_cidr = "172.16.0.0/16"
         dns_service_ip = "172.16.0.10"
     }
+}
 
+resource "azurerm_role_assignment" "asi" {
+    principal_id         = azurerm_kubernetes_cluster.asi.kubelet_identity[0].object_id
+    scope                = module.acr.acr_id
+    role_definition_name = "AcrPull"
+    skip_service_principal_aad_check = true
 }

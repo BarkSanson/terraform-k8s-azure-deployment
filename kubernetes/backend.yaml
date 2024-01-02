@@ -34,7 +34,6 @@ spec:
     spec:
       containers:
       - name: backend 
-        image: backend
-        imagePullPolicy: IfNotPresent # Use local image
+        image: asiregistry.azurecr.io/backend
         ports:
         - containerPort: 3000
