@@ -1,13 +1,13 @@
 const MAX_RESULTS = 500;
 const QUERY = 'all:deep+AND+all:learning';
 const AUTHOR_NUMBER_URL = `https://export.arxiv.org/api/query?search_query=${QUERY}&start=0&max_results=${MAX_RESULTS}`;
-const PASSENGER_NUMBER_URL = 'http://localhost:3000/flights/count';
-const JUGADORES_URL = 'http://localhost:3000/jugadores';
+const PASSENGER_NUMBER_URL = 'http://asi.eastus2.cloudapp.azure.com/flights/count';
+const PLAYERS_URL = 'http://asi.eastus2.cloudapp.azure.com/players';
 
 $(document).ready(() => {
     $.get(AUTHOR_NUMBER_URL, processAuthorNumber);
     $.get(PASSENGER_NUMBER_URL, processPassengerNumber);
-    $.get(JUGADORES_URL, processJugador);
+    $.get(PLAYERS_URL, processPlayer);
 });
 
 const processAuthorNumber = (data, _) => {
@@ -139,14 +139,12 @@ const processPassengerNumber = (data, _) => {
     
 };
 
-const processJugador = (data,_) => {
+const processPlayer = (data,_) => {
 
-    const nacionalidad = [];
+    const nationality = [];
     data.forEach(item =>{
-        nacionalidad.push(item.nacionalidad);
+        nationality.push(item.nationality);
     });
-
-  
 
     const d8 = [];
     const d9 = [];
@@ -172,7 +170,7 @@ const processJugador = (data,_) => {
         //     align: 'left'
         // },
         xAxis: {
-            categories: nacionalidad,
+            categories: nationality,
             title: {
                 text: 'Nacionalidades'
             },

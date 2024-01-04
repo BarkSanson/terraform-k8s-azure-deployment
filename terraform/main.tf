@@ -99,9 +99,43 @@ resource "azurerm_role_assignment" "aks-acr-connector" {
     role_definition_name = "AcrPull"
 }
 
+data "azurerm_user_assigned_identity" "aks_ingress_appgw" {
+    name                = "ingressapplicationgateway-${azurerm_kubernetes_cluster.asi.name}"
+    resource_group_name = azurerm_kubernetes_cluster.asi.node_resource_group
+}
 
-//resource "azurerm_role_assignment" "aks-appgw-connector" {
-//    principal_id         = module.vpn.vnet_id
-//    scope                = azurerm_kubernetes_cluster.asi.ingress_application_gateway[0].subnet_id
-//    role_definition_name = "Contributor"
-//}
+resource "azurerm_role_assignment" "aks_appgw_connector" {
+    principal_id         = data.azurerm_user_assigned_identity.aks_ingress_appgw.principal_id
+    scope                = module.appgw.appgw_id
+    role_definition_name = "Contributor"
+}
+
+resource "azurerm_role_assignment" "aks_appgw_rg_reader" {
+    principal_id         = data.azurerm_user_assigned_identity.aks_ingress_appgw.principal_id
+    scope                = azurerm_resource_group.asi.id
+    role_definition_name = "Reader"
+}
+
+resource "azurerm_role_assignment" "aks_appgw_identity_contributor" {
+    principal_id         = data.azurerm_user_assigned_identity.aks_ingress_appgw.principal_id
+    scope                = module.appgw.appgw_assigned_identity
+    role_definition_name = "Contributor"
+}
+
+resource "azurerm_role_assignment" "aks_vpn_contributor" {
+    principal_id         = data.azurerm_user_assigned_identity.aks_ingress_appgw.principal_id
+    scope                = module.vpn.appgw_vnet_id
+    role_definition_name = "Network Contributor"
+}
+
+
+data "azurerm_user_assigned_identity" "aks_kv" {
+    name = "azurekeyvaultsecretsprovider-${azurerm_kubernetes_cluster.asi.name}"
+    resource_group_name = azurerm_kubernetes_cluster.asi.node_resource_group
+}
+
+resource "azurerm_role_assignment" "aks-kv-connector" {
+    principal_id         = data.azurerm_user_assigned_identity.aks_kv.principal_id
+    scope                = module.kv.keyvault_id
+    role_definition_name = "Key Vault Administrator"
+}

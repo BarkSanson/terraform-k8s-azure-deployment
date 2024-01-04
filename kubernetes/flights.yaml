@@ -1,13 +1,7 @@
 apiVersion: v1
-kind: Namespace
-metadata:
-  name: flights
----
-apiVersion: v1
 kind: Service
 metadata:
   name: flights
-  namespace: flights
 spec:
   type: ClusterIP
   ports:
@@ -20,7 +14,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: flights 
-  namespace: flights
 spec:
   replicas: 3
   selector:
@@ -40,17 +33,26 @@ spec:
         - name: "DB_HOST"
           value: "asi-db-server.mysql.database.azure.com"
         - name: "DB_NAME"
-          value: "asi"
+          value: "asi-db"
         - name: "DB_PORT"
           value: "3306"
+        - name: "SECRETS_DIR"
+          value: "/mnt/secrets-store"
         volumeMounts:
         - name: secrets-store01-inline
           mountPath: "/mnt/secrets-store"
           readOnly: true
-  volumes:
-    - name: secrets-store01-inline
-      csi:
-        driver: secrets-store.csi.k8s.io
-        readOnly: true
-        volumeAttributes:
-          secretProviderClass: "asi-kv2"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 10
+          periodSeconds: 60
+          timeoutSeconds: 30
+      volumes:
+        - name: secrets-store01-inline
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: "asi-kv2"

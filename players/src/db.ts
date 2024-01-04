@@ -1,9 +1,14 @@
 import mysql2, { PoolOptions, Pool } from 'mysql2/promise';
-
+import * as fs from 'fs/promises';
 
 export async function get_db_pool(): Promise<Pool> {
-    const user = process.env["ASI-DB-USER"];
-    const password = process.env["ASI-DB-PASSWORD"];
+    const secrets_dir = process.env["SECRETS_DIR"];
+
+    const user_path = `${secrets_dir}/ASI-DB-USER`;
+    const password_path = `${secrets_dir}/ASI-DB-PASS`;
+
+    const user = await fs.readFile(user_path, 'utf-8');
+    const password = await fs.readFile(password_path, 'utf-8');
 
     const database = process.env["DB_NAME"];
     const host = process.env["DB_HOST"];

@@ -13,14 +13,22 @@ const main = async () => {
     app.use(express.json());
     app.use(cors());
 
-    app.get('/', async (req: Request, res: Response) => {
-        const players = await flights_repo.findPassengerCountPerYearPerMonth();
+    app.get('/flights', async (req: Request, res: Response) => {
+        res.status(200).send('Ok');
+    });
 
-        res.send(players);
+    app.get('/flights/count', async (req: Request, res: Response) => {
+        const flights_count = await flights_repo.findPassengerCountPerYearPerMonth();
+
+        res.send(flights_count);
+    });
+
+    app.get('/health', async (req: Request, res: Response) => {
+        res.status(200).send('Ok');
     });
 
     app.listen(3000, () => {
-        console.log('Listening on port 4000');
+        console.log('Listening on port 3000');
     });
 };
 

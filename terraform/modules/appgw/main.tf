@@ -23,6 +23,7 @@ resource "azurerm_user_assigned_identity" "asi_gw" {
 }
 
 resource "azurerm_application_gateway" "asi_gw" {
+
     name = "asi-gw"
     resource_group_name = var.rg_name
     location = var.location
@@ -80,4 +81,5 @@ resource "azurerm_application_gateway" "asi_gw" {
         type = "UserAssigned"
         identity_ids = [azurerm_user_assigned_identity.asi_gw.id]
     }
+
 }

@@ -6,6 +6,13 @@ resource "azurerm_virtual_network" "asi_vnet" {
     address_space       = ["10.0.0.0/8"]
 }
 
+resource "azurerm_virtual_network" "app_gw" {
+    name                = "app-gw-vnet"
+    resource_group_name = var.rg_name
+    location            = var.location
+    address_space       = ["192.168.0.0/16"]
+}
+
 resource "azurerm_subnet" "db_subnet" {
     name                 = "db-subnet"
     resource_group_name  = var.rg_name
@@ -33,6 +40,24 @@ resource "azurerm_subnet" "aks_subnet" {
 resource "azurerm_subnet" "appgw_subnet" {
     name = "appgw-subnet"
     resource_group_name = var.rg_name
+    virtual_network_name = azurerm_virtual_network.app_gw.name
+    address_prefixes = ["192.168.0.0/24"] 
+}
+
+resource "azurerm_virtual_network_peering" "asi_to_appgw" {
+    name = "asi-to-appgw"
+    resource_group_name = var.rg_name
     virtual_network_name = azurerm_virtual_network.asi_vnet.name
-    address_prefixes = ["10.2.0.0/24"] 
+    remote_virtual_network_id = azurerm_virtual_network.app_gw.id
+    allow_virtual_network_access = true
+    allow_forwarded_traffic = true
+}
+
+resource "azurerm_virtual_network_peering" "appgw_to_asi" {
+    name = "appgw-to-asi"
+    resource_group_name = var.rg_name
+    virtual_network_name = azurerm_virtual_network.app_gw.name
+    remote_virtual_network_id = azurerm_virtual_network.asi_vnet.id
+    allow_virtual_network_access = true
+    allow_forwarded_traffic = true
 }

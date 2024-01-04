@@ -2028,7 +2028,7 @@ INSERT INTO flight_logs (flight_number, departure_airport, arrival_airport, depa
 ('PJT-5740', 'TRF', 'PAL', '2020-07-18', '2021-05-06', '3:35', '9:06', 315);
 
 
-INSERT INTO jugador (id, player_name, age, overall, nationality) VALUES
+INSERT INTO players (id, player_name, age, overall, nationality) VALUES
 (194765, ' A. Griezmann', 28, '89', 'France'),
 (212198, ' Bruno Fernandes', 24, '89', 'Portugal'),
 (192985, ' K. De Bruyne', 28, '91', 'Belgium'),
