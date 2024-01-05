@@ -13,7 +13,7 @@ const main = async () => {
     app.use(express.json());
     app.use(cors());
 
-    app.get('/players', async (req: Request, res: Response) => {
+    app.get('/', async (req: Request, res: Response) => {
         const players = await player_repo.fetchPlayersData();
 
         res.status(200).send(players);
