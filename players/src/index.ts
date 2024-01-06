@@ -3,6 +3,8 @@ import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
 import { PlayerRepository } from "./repositories/PlayerRepository";
 
+const SERVICE_NAME = 'players';
+
 const main = async () => {
     const pool = await get_db_pool();
 
@@ -13,13 +15,13 @@ const main = async () => {
     app.use(express.json());
     app.use(cors());
 
-    app.get('/', async (req: Request, res: Response) => {
+    app.get(`/${SERVICE_NAME}`, async (req: Request, res: Response) => {
         const players = await player_repo.fetchPlayersData();
 
         res.status(200).send(players);
     });
 
-    app.get('/health', async (req: Request, res: Response) => {
+    app.get(`/health`, async (req: Request, res: Response) => {
         res.status(200).send('Ok');
     });
 

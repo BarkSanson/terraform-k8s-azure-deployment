@@ -39,7 +39,6 @@ resource "azurerm_key_vault" "asi" {
         bypass = "AzureServices"
 
         virtual_network_subnet_ids = [ 
-            var.db_subnet_id,
             var.aks_subnet_id
         ]
 

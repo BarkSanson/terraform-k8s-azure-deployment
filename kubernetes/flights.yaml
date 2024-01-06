@@ -31,7 +31,7 @@ spec:
         - containerPort: 3000
         env:
         - name: "DB_HOST"
-          value: "asi-db-server.mysql.database.azure.com"
+          value: "asi-db-server.asi.private.mysql.database.azure.com"
         - name: "DB_NAME"
           value: "asi-db"
         - name: "DB_PORT"

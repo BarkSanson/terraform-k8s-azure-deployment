@@ -14,10 +14,6 @@ variable "object_id" {
     description = "The object ID of the Azure Active Directory principal used for authenticating requests to the key vault."
 }
 
-variable "db_subnet_id" {
-    description = "The ID of the MySQL subnet" 
-}
-
 variable "aks_subnet_id" {
     description = "The ID of the AKS subnet" 
 }

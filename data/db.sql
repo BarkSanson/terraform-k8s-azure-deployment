@@ -1,6 +1,5 @@
-CREATE DATABASE adiiu;
 
-USE adiiu;
+USE asi-db;
 
 -- Create table 'flight logs'
 CREATE TABLE flight_logs (

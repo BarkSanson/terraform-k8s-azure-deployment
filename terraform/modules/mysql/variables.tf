@@ -1,4 +1,3 @@
-
 variable "admin_login" {
     description = "The administrator login name for the MySQL Flexible Server."
 }
@@ -13,6 +12,14 @@ variable "rg_name" {
 
 variable "location" {
     description = "The location of the resource group in which to create the MySQL Flexible Server."
+}
+
+variable "aks_vnet_id" {
+    description = "The ID of the AKS VNet"
+}
+
+variable "db_vnet_id" {
+    description = "The ID of the MySQL VNet"
 }
 
 variable "db_subnet_id" {

@@ -10,12 +10,17 @@ export class FlightsRepository implements IFlightsRepository {
     }
 
     public async findPassengerCountPerYearPerMonth(): Promise<Flight[]> {
-        const query = 'SELECT nationality, COUNT(CASE WHEN overall BETWEEN 70 AND 79 THEN 1 END) as d8, \
-        COUNT(CASE WHEN overall BETWEEN 80 AND 89 THEN 1 END) as d9, COUNT(CASE WHEN overall BETWEEN 90 AND 99 THEN 1 END) as d10, COUNT(nom) as c FROM players\
-        GROUP BY nationality ORDER BY c DESC LIMIT 10;';
+        const query = 'SELECT \
+            YEAR(departure_date) AS year,\
+            MONTHNAME(departure_date) AS month,\
+            SUM(passenger_count) AS passengers \
+            FROM flight_logs \
+            GROUP BY \
+            YEAR(departure_date), \
+            MONTHNAME(departure_date);';
 
         const [rows, _] = await this.db.query(query);
 
-        return rows as Flight[];        
+        return rows as Flight[];
     }
 }

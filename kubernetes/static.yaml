@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: static
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 80
+  selector:
+    app: static
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: static
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: static
+  template:
+    metadata:
+      labels:
+        app: static
+    spec:
+      containers:
+      - name: static
+        image: asiregistry.azurecr.io/static
+        ports:
+        - containerPort: 80
+    

@@ -4,12 +4,18 @@ metadata:
   name: frontend
   annotations:
     appgw.ingress.kubernetes.io/health-probe-path: /health
-    appgw.ingress.kubernetes.io/rewrite-rule-set: remove-root
 spec:
   ingressClassName: azure-application-gateway
   rules:
   - http:
       paths:
+      - path: /
+        pathType: Exact
+        backend:
+          service:
+            name: static
+            port:
+              number: 80
       - path: /flights
         pathType: Prefix
         backend:
