@@ -1,6 +1,6 @@
 
-resource "azurerm_virtual_network" "aks" {
-    name                = "aks-vnet"
+resource "azurerm_virtual_network" "backend" {
+    name                = "backend-vnet"
     resource_group_name = var.rg_name
     location            = var.location
     // AKS requires at least 500 something IP addresses, so
@@ -9,8 +9,8 @@ resource "azurerm_virtual_network" "aks" {
     address_space       = ["10.0.0.0/8"]
 }
 
-resource "azurerm_virtual_network" "appgw" {
-    name                = "app-gw-vnet"
+resource "azurerm_virtual_network" "frontend" {
+    name                = "frontend-vnet"
     resource_group_name = var.rg_name
     location            = var.location
     address_space       = ["192.168.0.0/16"]
@@ -39,51 +39,51 @@ resource "azurerm_subnet" "db" {
 resource "azurerm_subnet" "aks" {
     name                 = "aks-subnet"
     resource_group_name  = var.rg_name
-    virtual_network_name = azurerm_virtual_network.aks.name
+    virtual_network_name = azurerm_virtual_network.backend.name
     address_prefixes     = ["10.1.0.0/16"]
 
     service_endpoints    = [ "Microsoft.KeyVault"]
 }
 
-resource "azurerm_subnet" "appgw_subnet" {
-    name                    = "appgw-subnet"
+resource "azurerm_subnet" "frontend" {
+    name                    = "frontend-subnet"
     resource_group_name     = var.rg_name
-    virtual_network_name    = azurerm_virtual_network.appgw.name
+    virtual_network_name    = azurerm_virtual_network.frontend.name
     address_prefixes        = ["192.168.0.0/24"] 
 }
 
-resource "azurerm_virtual_network_peering" "aks_to_appgw" {
-    name                            = "aks-to-appgw"
+resource "azurerm_virtual_network_peering" "backend_to_frontend" {
+    name                            = "backend-to-frontend"
     resource_group_name             = var.rg_name
-    virtual_network_name            = azurerm_virtual_network.aks.name
-    remote_virtual_network_id       = azurerm_virtual_network.appgw.id
+    virtual_network_name            = azurerm_virtual_network.backend.name
+    remote_virtual_network_id       = azurerm_virtual_network.frontend.id
     allow_virtual_network_access    = true
     allow_forwarded_traffic         = true
 }
 
-resource "azurerm_virtual_network_peering" "appgw_to_aks" {
-    name                            = "aks-to-asi"
+resource "azurerm_virtual_network_peering" "frontend_to_backend" {
+    name                            = "frontend-to-backend"
     resource_group_name             = var.rg_name
-    virtual_network_name            = azurerm_virtual_network.appgw.name
-    remote_virtual_network_id       = azurerm_virtual_network.aks.id
+    virtual_network_name            = azurerm_virtual_network.frontend.name
+    remote_virtual_network_id       = azurerm_virtual_network.backend.id
     allow_virtual_network_access    = true
     allow_forwarded_traffic         = true
 }
 
-resource "azurerm_virtual_network_peering" "aks_to_db" {
-    name                            = "aks-to-db"
+resource "azurerm_virtual_network_peering" "backend_to_db" {
+    name                            = "backend-to-db"
     resource_group_name             = var.rg_name
-    virtual_network_name            = azurerm_virtual_network.aks.name
+    virtual_network_name            = azurerm_virtual_network.backend.name
     remote_virtual_network_id       = azurerm_virtual_network.db.id
     allow_virtual_network_access    = true
     allow_forwarded_traffic         = true
 }
 
-resource "azurerm_virtual_network_peering" "db_to_aks" {
-    name                            = "db-to-aks"
+resource "azurerm_virtual_network_peering" "db_to_backend" {
+    name                            = "db-to-backend"
     resource_group_name             = var.rg_name
     virtual_network_name            = azurerm_virtual_network.db.name
-    remote_virtual_network_id       = azurerm_virtual_network.aks.id
+    remote_virtual_network_id       = azurerm_virtual_network.backend.id
     allow_virtual_network_access    = true
     allow_forwarded_traffic         = true
 }

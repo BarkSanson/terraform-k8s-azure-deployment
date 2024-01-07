@@ -43,7 +43,7 @@ module "mysql" {
 
     db_vnet_id      = module.vpn.db_vnet_id
     db_subnet_id    = module.vpn.db_subnet_id
-    aks_vnet_id     = module.vpn.aks_vnet_id
+    aks_vnet_id     = module.vpn.backend_vnet_id
 
     admin_login     = var.admin_login
     admin_password  = var.admin_password
@@ -53,7 +53,7 @@ module "gateway" {
     source      = "./modules/gateway"
     rg_name     = azurerm_resource_group.asi.name
     location    = azurerm_resource_group.asi.location
-    subnet_id   = module.vpn.appgw_subnet_id
+    subnet_id   = module.vpn.frontend_subnet_id
 }
 
 module "aks" {
@@ -66,6 +66,6 @@ module "aks" {
     key_vault_id        = module.kv.keyvault_id
     appgw_identity_id   = module.gateway.appgw_identity_id
     appgw_id            = module.gateway.appgw_id
-    appgw_subnet_id     = module.vpn.appgw_subnet_id
+    appgw_subnet_id     = module.vpn.frontend_subnet_id
 }
 

@@ -1,9 +1,9 @@
-output "aks_vnet_id" {
-  value = azurerm_virtual_network.aks.id
+output "backend_vnet_id" {
+  value = azurerm_virtual_network.backend.id
 }
 
-output "appgw_vnet_id" {
-  value = azurerm_virtual_network.appgw.id
+output "frontend_vnet_id" {
+  value = azurerm_virtual_network.frontend.id
 }
 
 output "db_vnet_id" {
@@ -18,6 +18,6 @@ output "aks_subnet_id" {
   value = azurerm_subnet.aks.id
 }
 
-output "appgw_subnet_id" {
-  value = azurerm_subnet.appgw_subnet.id
+output "frontend_subnet_id" {
+  value = azurerm_subnet.frontend.id
 }
